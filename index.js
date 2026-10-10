@@ -9,9 +9,20 @@ const app = express();
 const port = process.env.PORT || 3000;
 const server = http.createServer(app);
 
+const allowedOrigins = ["http://localhost:5173", process.env.CLIENT_URL].filter(
+  Boolean,
+);
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  }),
+);
+
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "DELETE"],
   },
 });
@@ -53,7 +64,7 @@ const getCollections = async () => {
     cardsCollection: database.collection("cards"),
     usersCollection: database.collection("users"),
     activitiesCollection: database.collection("activities"),
-     commentsCollection: database.collection("comments"),
+    commentsCollection: database.collection("comments"),
   };
 };
 // ================= WORKSPACE API =================
@@ -838,8 +849,7 @@ app.get("/activities", async (req, res) => {
 // Create Comment
 app.post("/comments", async (req, res) => {
   try {
-    const { commentsCollection, activitiesCollection } =
-      await getCollections();
+    const { commentsCollection, activitiesCollection } = await getCollections();
 
     const { cardId, boardId, text } = req.body;
 
@@ -929,6 +939,10 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+if (require.main === module) {
+  server.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+  });
+}
+
+module.exports = server;
