@@ -9,7 +9,9 @@ const app = express();
 const port = process.env.PORT || 3000;
 const server = http.createServer(app);
 
-const allowedOrigins = ["http://localhost:5173", process.env.CLIENT_URL].filter(
+const allowedOrigins = ["http://localhost:5173",
+       "https://poetic-frangipane-9c55c3.netlify.app",
+  process.env.CLIENT_URL].filter(
   Boolean,
 );
 
