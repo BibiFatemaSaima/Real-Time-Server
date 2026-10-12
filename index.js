@@ -9,29 +9,28 @@ const app = express();
 const port = process.env.PORT || 3000;
 const server = http.createServer(app);
 
-const allowedOrigins = ["http://localhost:5173",
-       "https://poetic-frangipane-9c55c3.netlify.app",
-  process.env.CLIENT_URL].filter(
-  Boolean,
-);
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://poetic-frangipane-9c55c3.netlify.app",
+  process.env.CLIENT_URL,
+].filter(Boolean);
 
 app.use(
   cors({
     origin: allowedOrigins,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
 
 const io = new Server(server, {
   cors: {
     origin: allowedOrigins,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   },
 });
 
-// ================= MIDDLEWARE =================
-
-app.use(cors());
 app.use(express.json());
 
 // ================= MONGODB =================
